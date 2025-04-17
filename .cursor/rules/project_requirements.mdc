@@ -1,0 +1,154 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Below is a suggested task breakdown that “drills down” the work in manageable, deliverable scopes. Each step explains the user story, the end-to-end flow, the UI/UX details, and the necessary state and data items. Note that while we’re building on our Next.js SaaS Starter Template, this MVP will deliver the core DriveSafe functionality, and all placeholder components must be replaced with actual libraries (for example, using react-native-sensors–or its web/PWA equivalent if targeting mobile browsers, and using the proper local notification libraries for alerts). All styling should use shadcn/ui components and Tailwind CSS variable-based colors as described.
+
+────────────────────────────  
+1. Task 1: Overall Layout & Core UI Setup  
+────────────────────────────  
+• User Story:  
+ “As a user, I want to open the DriveSafe app and immediately see a cohesive and branded interface so that I know I am using a professional safety app.”  
+
+• Scope Details:  
+ – In app/app/page.tsx (the gated app home page), build a full-page layout that serves as the main dashboard for the DriveSafe app.  
+ – Update the Header.tsx component (located in components/app) so that its styles match the overall app style (e.g., use bg-primary, text-primary-foreground from Tailwind).  
+ – Remove any placeholder components from the previous template; ensure that each section is wired to a future functionality area (for example, a status panel and control buttons).  
+
+• UI & Flow:  
+ – The landing page shows a header, a central dashboard panel with status indicators, and a footer (if needed).  
+ – The header displays the app title “DriveSafe” and basic navigation (if applicable).  
+ – The dashboard should be responsive and use shadcn/ui components wrapped in divs with proper Tailwind classes.  
+
+• State & Data Points:  
+ – Global state for authentication and user data is preloaded, but add local state placeholders for “drivingStatus” (default “idle”) and “alertStatus” (default “off”).  
+
+────────────────────────────  
+2. Task 2: Driving Detection Module  
+────────────────────────────  
+• User Story:  
+ “As a driver, I want the app to monitor my vehicle’s motion so that driving is only detected when I’m actually in transit.”  
+
+• Scope Details:  
+ – Integrate the driving detection using geolocation and motion (accelerometer) APIs.  
+ – Use react-native-geolocation (or a web-based equivalent if using a PWA) to continuously read speed.  
+ – Set a threshold trigger (speed > 10 mph) to start “driving mode.”  
+ – Confirm driving motion with accelerometer/gyroscope data to minimize false positives (e.g., a quick acceleration pattern on foot).  
+
+• UI & Flow:  
+ – While the sensor and geolocation modules run in the background, update a small “Drivemode” indicator on the dashboard (for example, a badge with status “Driving” when activated, styled with Tailwind’s bg-primary).  
+ – When the user is driving, this status updates in real time.  
+
+• State & Data Points:  
+ – Save current speed, detected accelerometer patterns, and a Boolean flag “isDriving” within the app state.  
+ – This module should publish events (“drivingStarted”, “drivingStopped”) that other modules can subscribe to.  
+
+────────────────────────────  
+3. Task 3: Phone Handling Detection Module  
+────────────────────────────  
+• User Story:  
+ “As a driver, I want the app to detect if I pick up or handle my phone so that I receive an alert if I become distracted while driving.”  
+
+• Scope Details:  
+ – Integrate react-native-sensors (or appropriate sensor libraries) to capture accelerometer and gyroscope data.  
+ – Determine a motion pattern that distinguishes between a phone simply sitting in a mount and a phone being picked up/handled.  
+ – Detect the phone’s transition from resting state to active handling and vice versa.  
+
+• UI & Flow:  
+ – No major UI screen is needed for the sensor; however, update the dashboard with an “Attention” icon (using Lucide React icons) when phone handling is detected, maybe overlaying next to the “Driving” indicator.  
+ – Use shadcn/ui’s Alert component styled with Tailwind’s text-primary-foreground to show an immediate visual indicator.  
+
+• State & Data Points:  
+ – Local state property “phoneHandling” (true/false).  
+ – Maintain timestamps (or counters) for when handling begins/ends.  
+
+────────────────────────────  
+4. Task 4: Alert System Implementation  
+────────────────────────────  
+• User Story:  
+ “When I am driving and start handling my phone, I want the app to immediately deliver clear and escalating alerts so that I correct my behavior to remain safe.”  
+
+• Scope Details:  
+ – Build an alert system triggered when “isDriving” is true and “phoneHandling” becomes true.  
+ – Display an on-screen alert overlay built with shadcn/ui components.  
+ – Invoke an audio alert that plays a beep, with increasing volume if the condition persists.  
+ – Integrate a voice announcement (“Please put your phone down”) using native Web APIs or a library that directly plays pre-recorded audio (no dynamic imports, use an already available library).  
+ – Program logic to cancel the alert once the phone is put down (transition of “phoneHandling” to false).  
+
+• UI & Flow:  
+ – The alert overlay should cover key portions of the screen to capture the user’s attention; it should be styled with bg-primary (or another Tailwind wrapper if needed) and include clear text and iconography (Lucide React icons–for example, an alert icon) to indicate urgency.  
+ – Consider an “alert badge” that reappears if the alert is ignored, visually reinforcing the message.  
+
+• State & Data Points:  
+ – Maintain “alertActive” (boolean) and “alertLevel” (number or enum) in state.  
+ – Use timers or intervals to escalate alert volume or repetition.  
+ – Log the start and stop times of alerts for future analysis or A/B testing metrics.  
+
+────────────────────────────  
+5. Task 5: A/B Testing & Variant Management for Alerts  
+────────────────────────────  
+• User Story:  
+ “As a product owner, I want to test different versions of alerts (audio/visual variations) so that I can optimize the system’s effectiveness with real users.”  
+
+• Scope Details:  
+ – On app start or login (determined by the backend or randomly on the client side), assign the user to an alert variant group.  
+ – Create two variants for the alert system (for instance, Variant A – standard alert; Variant B – slightly different alert tone and voice announcement cadence).  
+ – Ensure that the alert system reads from this variant flag to determine which alert style to deploy.  
+
+• UI & Flow:  
+ – The on-screen alert overlay should change based on the variant. For example:  
+  ◦ Variant A: Audio alert with a default beep and voice message “Please put your phone down.”  
+  ◦ Variant B: Audio alert with slightly more aggressive sound; the UI may display a different layout element, such as a colored border or animation.  
+ – Include subtle UI indicators (or log these events internally) to capture which variant was active (avoid any testing UI visible to the user).  
+
+• State & Data Points:  
+ – Assign and maintain a state variable (e.g., “alertVariant”: "A" or "B").  
+ – Store alert events linked to the variant.  
+ – Ensure that the assignment remains consistent during a session.  
+
+────────────────────────────  
+6. Task 6: Integration & Background Efficiency Enhancements  
+────────────────────────────  
+• User Story:  
+ “As a user, I want the app to operate reliably in the background without draining my battery so that my driving detection and alerts function seamlessly.”
+  
+• Scope Details:  
+ – Integrate the driving detection and phone handling modules so that the alert system is only triggered when both conditions are met.  
+ – Optimize background processing (using battery- efficient polling intervals or native Web APIs) so that the sensors and geolocation calls do not overrun battery life.  
+ – Verify that the sensor monitoring works both when the app is in the foreground and in a background mode (using Next.js techniques for PWA if needed).  
+
+• UI & Flow:  
+ – The main dashboard should reflect the current states (“isDriving”, “phoneHandling”, “alertActive”) in real time without requiring a page refresh.  
+ – There should be a clear, persistent indicator (perhaps in a status bar or badge) that informs the user when the system is in “monitoring mode.”  
+
+• State & Data Points:  
+ – Ensure that the sensor data streams are efficiently managed using local state and context or a state management library (if needed).  
+ – Monitor system resource usage (log lightweight timestamps for sensor polling start/stop) that can be sent later via Firebase Analytics (without fetching or making additional network requests directly).  
+
+────────────────────────────  
+7. Task 7: Final UI Polish and User Flow Integration  
+────────────────────────────  
+• User Story:  
+ “As a driver, I expect a smooth, integrated experience where all parts of the DriveSafe app (detection, alerts, UI updates) work together seamlessly.”
+  
+• Scope Details:  
+ – Bring together the dashboard, detection modules, and alert overlay.  
+ – Replace any previous temporary placeholders with the actual sensor-based modules and proper libraries.  
+ – Refine animations and transitions (e.g., when alert overlay appears/disappears) using native APIs like the Intersection Observer (if applicable) for smoothness.  
+ – Ensure all UI components use shadcn/ui and Tailwind’s color classes for a professional, consistent look.  
+
+• UI & Flow:  
+ – Test the full user flow: user logs in, dashboard lays out the interface, driving detection automatically kicks in once speed is detected, phone handling is monitored, and if both coincide, an alert overlay pops up with audio & visual cues.  
+ – Once the phone is put down, the alert overlay gracefully fades out and resets alert state.  
+
+• State & Data Points:  
+ – Integrate central state updates for “isDriving”, “phoneHandling”, “alertActive”, “alertLevel”, and “alertVariant.”  
+ – Ensure that transitions between states are smooth and instantaneous, with proper visual feedback throughout.
+
+────────────────────────────  
+Summary  
+────────────────────────────  
+By following this breakdown, each deliverable provides a complete user story along with clearly defined UI flows, components, and view/state updates. The initial work (Task 1) will properly set up the overall layout in app/app/page.tsx, adhering to the styling and component library requirements. Subsequent tasks build the core feature set that drives the DriveSafe app MVP, ensuring that the functionality, user flow, and visual consistency are all tightly integrated.
+
+This iterative approach makes sure that at every step the app remains functional, looks professional (using the shadcn/ui components, Tailwind CSS’s color variables), and provides real value by detecting risky phone usage when driving and delivering appropriate alerts until corrective action is taken.

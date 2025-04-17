@@ -1,0 +1,108 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Below is one example of a minimal project structure that builds upon the Next.js SaaS Starter Template while meeting the DriveSafe MVP requirements. Note that we retain all authentication, payment, and database integrations while adding new modules (hooks, components, and types) for sensing, phone handling, alerts, and A/B testing.
+
+For example, the core DriveSafe dashboard is implemented in the authenticated app (app/app/page.tsx), and new helper code is organized into the lib/hooks, lib/sensors, and types folders. You can adjust file names and contents as needed, but this structure shows one clear approach:
+
+────────────────────────────────────────
+Project Structure (Tree View)
+────────────────────────────────────────
+app/
+├── app/
+│   ├── layout.tsx            // Dashboard layout—wraps the DriveSafe UI (includes Header, footer, etc.)
+│   ├── page.tsx              // DriveSafe Dashboard: integrates tasks (UI, sensor hooks, statuses)
+│   └── settings/             // (Optional) New settings page for DriveSafe configuration
+│       └── page.tsx
+├── actions/
+│   ├── auth.ts
+│   └── stripe.ts
+├── api/
+│   ├── auth/                 // Authentication API endpoints
+│   ├── (payment)/            // Payment endpoints (Stripe etc.)
+│   ├── profile/              // User profile endpoints
+│   └── webhook/              // Webhook handlers (e.g. for Stripe)
+├── success/                  // Success pages (e.g., post-payment)
+├── layout.tsx                // Root layout with providers for public pages
+└── page.tsx                  // Landing page for unauthorized users
+
+components/
+├── app/
+│   ├── Header.tsx            // Updated DriveSafe header (e.g. “DriveSafe” title, navigation, and Tailwind bg-primary)
+│   ├── DashboardPanel.tsx    // Main panel displaying drivingStatus, phoneHandling, etc.
+│   └── AlertOverlay.tsx      // Full-screen alert overlay with visual cues and icons (Task 4)
+├── email/
+├── stripe/
+├── ui/                     // Reusable UI components (buttons, inputs, etc.) – using shadcn/ui & Tailwind
+└── user/
+    ├── sign-in.tsx
+    └── sign-out.tsx
+
+lib/
+├── hooks/
+│   ├── useDrivingDetection.ts   // Task 2 – Hook using geolocation and motion sensor APIs; updates drivingStatus, isDriving, speed, etc.
+│   ├── usePhoneHandling.ts        // Task 3 – Hook to detect phone handling changes (transition from rest to active) via accelerometer/gyroscope data
+│   └── useAlertSystem.ts          // Task 4 – Hook to manage alert state (alertActive, alertLevel, playing audio cues, etc.) and escalation logic
+├── sensors/
+│   └── driverSensors.ts           // Helper functions for interfacing with native/performance-friendly sensor APIs
+├── auth.config.ts
+├── auth.ts
+├── authSendRequest.ts
+├── mail.ts
+├── utils.ts
+└── abTesting.ts                 // Task 5 – Simple A/B testing logic to assign alert variants and expose “alertVariant” state
+
+types/
+├── database.types.ts
+├── next-auth.d.ts
+└── drivesafe.types.ts           // DriveSafe-specific types (e.g. drivingStatus enum, alertLevel settings, sensor data interfaces)
+
+utils/
+├── supabase/
+│   ├── client.ts
+│   ├── front.ts
+│   ├── server.ts
+│   └── user.ts
+└── stripe.ts
+
+supabase/
+└── config.toml
+
+public/
+    // Static assets (images, fonts, icons, etc.)
+
+.env.local
+config.ts
+middleware.ts
+[Other Config Files]            // e.g. next.config.ts, tailwind.config.ts, etc.
+────────────────────────────────────────
+
+How It Fits the DriveSafe Tasks:
+
+1. Overall Layout & Core UI Setup  
+   • In app/app/page.tsx, the DriveSafe Dashboard will render a header (components/app/Header.tsx), a central DashboardPanel, and (if needed) a footer.  
+   • The Header uses Tailwind classes (e.g., bg-primary, text-primary-foreground) to set the brand style.
+   • Local states (like drivingStatus and alertStatus) are initialized and passed into dashboard components.
+
+2. Driving Detection Module  
+   • The hook useDrivingDetection.ts in lib/hooks reads geolocation and motion sensor data (via functions in lib/sensors/driverSensors.ts) and updates state (e.g., isDriving, current speed).
+
+3. Phone Handling Detection Module  
+   • The hook usePhoneHandling.ts uses sensor libraries to track phone transitions (rest vs. being held) and updates a local “phoneHandling” flag.
+
+4. Alert System Implementation  
+   • The AlertOverlay component (components/app/AlertOverlay.tsx) renders an overlay when alerts are active.  
+   • The hook useAlertSystem.ts manages audio cues, visual alerts, and escalation logic based on sensor hooks’ provided state.
+
+5. A/B Testing for Alerts  
+   • The lib/abTesting.ts defines a simple variant assignment (e.g., “A” or “B”) that is read by the useAlertSystem hook to adjust alert presentation.
+
+6. Integration & Background Efficiency  
+   • The detection hooks (useDrivingDetection and usePhoneHandling) work together to trigger alerts only when needed and are optimized for performance to run in background/PWA mode.
+
+7. Final UI Polish  
+   • The drive-safe Dashboard integrates all these modules. Changes from sensor hooks trigger state updates, which in turn update the DashboardPanel and AlertOverlay for a consistent user experience using shadcn/ui and Tailwind transitions.
+
+This structure keeps the core SaaS functions (authentication, payments, database integration) intact while isolating the new DriveSafe features into well-organized modules for UI (components/app/*), sensor logic (lib/hooks/* and lib/sensors/*), and state types (types/drivesafe.types.ts).

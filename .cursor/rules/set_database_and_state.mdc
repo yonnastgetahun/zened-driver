@@ -1,0 +1,54 @@
+Below are two clearly delineated sections. The first details a minimal database schema to store driving sessions and alert events (the only persistent, structured data the UI and analysis require). The second outlines a lean state management interface that covers all the key drive‐safety state variables and updates.
+
+────────────────────────────
+Database Schema
+
+Each table includes an automatically generated id and, where appropriate, a user_id that defaults to next_auth.uid(). The drivesafe_session table tracks when a driving session starts (and optionally stops), while the drivesafe_alert table logs each alert event—with its associated session, alert level, and variant—for future analysis.
+
+------------------------------------------------
+create table drivesafe_session (
+  id integer generated always as identity primary key,
+  user_id uuid not null default next_auth.uid(),
+  started_at timestamp with time zone not null default now(),
+  ended_at timestamp with time zone
+);
+
+create table drivesafe_alert (
+  id integer generated always as identity primary key,
+  session_id integer not null references drivesafe_session(id) on delete cascade,
+  user_id uuid not null default next_auth.uid(),
+  alert_level integer not null,
+  alert_variant text not null,
+  started_at timestamp with time zone not null default now(),
+  ended_at timestamp with time zone
+);
+------------------------------------------------
+
+────────────────────────────
+State Management
+
+This state interface captures the core dynamic properties needed by the DriveSafe UI. It includes the driving status, the current speed, a flag for phone handling, and all alert-related properties. The accompanying action methods allow updating each piece of state—providing a single source of truth that sensor hooks and UI components can subscribe to.
+
+------------------------------------------------
+export interface DriveSafeState {
+  // Core status properties
+  drivingStatus: 'idle' | 'driving';
+  currentSpeed: number;
+  phoneHandling: boolean;
+  
+  // Alert-related properties
+  alertActive: boolean;
+  alertLevel: number;
+  alertVariant: 'A' | 'B';
+
+  // Action methods to update the state
+  setDrivingStatus: (status: 'idle' | 'driving') => void;
+  updateSpeed: (speed: number) => void;
+  setPhoneHandling: (handling: boolean) => void;
+  setAlertActive: (active: boolean) => void;
+  updateAlertLevel: (level: number) => void;
+  setAlertVariant: (variant: 'A' | 'B') => void;
+}
+------------------------------------------------
+
+These concise definitions ensure that both the persistence layer and the in-app state remain as minimal as possible while clearly supporting the DriveSafe MVP requirements.
