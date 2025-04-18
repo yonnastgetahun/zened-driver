@@ -12,7 +12,8 @@ export async function handleSignIn() {
 
 export async function handleSignOut() {
 	// Clear guest auth cookie if it exists
-	cookies().delete('guest_auth');
+	const cookieStore = cookies();
+	cookieStore.delete('guest_auth');
 	await signOut({ redirectTo: "/" })
 }
 
@@ -21,7 +22,8 @@ export async function handleGuestSignIn() {
 	const deviceId = generateDeviceId();
 	
 	// Set a cookie to identify the guest user
-	cookies().set('guest_auth', deviceId, { 
+	const cookieStore = cookies();
+	cookieStore.set('guest_auth', deviceId, { 
 		path: '/',
 		maxAge: 60 * 60 * 24 * 30, // 30 days
 		httpOnly: true,
@@ -30,7 +32,7 @@ export async function handleGuestSignIn() {
 	});
 	
 	// Store additional info in a non-HttpOnly cookie for client-side access
-	cookies().set('guest_info', JSON.stringify({ 
+	cookieStore.set('guest_info', JSON.stringify({ 
 		isGuest: true,
 		deviceId 
 	}), { 
