@@ -32,7 +32,7 @@ export async function submitFeedback({
     )
 
     // Store the feedback in Supabase
-    const { data, error } = await supabase
+    const { data: _data, error } = await supabase
       .from('feedback')
       .insert([
         {
@@ -74,7 +74,7 @@ export async function submitQuickFeedback({
     )
 
     // Store the quick reaction feedback in Supabase
-    const { data, error } = await supabase
+    const { data: _data, error } = await supabase
       .from('quick_feedback')
       .insert([
         {

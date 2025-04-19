@@ -4,6 +4,7 @@ import { ChevronDown, LogOut, User } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
 import { useGuest } from '@/components/GuestContext';
 import { handleSignOut } from '@/app/actions/auth';
+import Image from 'next/image';
 
 export default function UserMenu() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,15 +13,11 @@ export default function UserMenu() {
 	const user = session?.user;
 
 	// Use server action for both regular and guest sign out
-	const handleUserSignOut = () => {
+	const handleUserSignOut = async () => {
 		// For guest users we use the server action, for regular users we use signOut()
 		if (isGuest) {
-			// Use our custom server action
-			const form = document.createElement('form');
-			form.action = handleSignOut;
-			form.method = 'post';
-			document.body.appendChild(form);
-			form.submit();
+			// Use our custom server action directly instead of setting it as form.action
+			await handleSignOut();
 		} else {
 			// Use next-auth signOut for regular users
 			signOut();
@@ -45,10 +42,12 @@ export default function UserMenu() {
 				className="flex items-center space-x-3 focus:outline-none"
 				onClick={() => setIsMenuOpen(!isMenuOpen)}
 			>
-				<img
+				<Image
 					src={avatarUrl}
 					alt={`${displayName} avatar`}
 					className="h-8 w-8 rounded-full object-cover"
+					width={32}
+					height={32}
 				/>
 				<span className="hidden md:flex items-center space-x-1">
 					<span className="text-sm font-medium text-gray-700">{displayName}</span>

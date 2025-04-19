@@ -82,7 +82,14 @@ export default async function AnalyticsPage() {
       ...variantB,
       userCount: variantB.users.size
     },
-    rawEvents: alertsData || []
+    rawEvents: (alertsData || []).map(alert => ({
+      id: Number(alert.id),
+      alert_level: alert.alert_level || 1, // Use the actual alert_level or default to 1
+      alert_variant: alert.alert_variant, // Use alert_variant from the database
+      duration: alert.duration || undefined, // Convert null to undefined
+      created_at: alert.created_at,
+      user_id: alert.user_id
+    }))
   };
   
   return (

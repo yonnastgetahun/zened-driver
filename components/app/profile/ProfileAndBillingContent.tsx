@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, /* AnimatePresence */ } from 'framer-motion';
+import Image from 'next/image';
 
 // Animation variants
 const fadeIn = {
@@ -115,10 +116,12 @@ export default function ProfileAndBillingContent() {
 					{userData.image && (
 						<div className="col-span-1 md:col-span-2 flex items-center">
 							<div className="mr-4">
-								<img
+								<Image
 									src={userData.image}
 									alt="User avatar"
 									className="w-20 h-20 rounded-full border-4 border-[#5059FE]/20 shadow-md"
+									width={80}
+									height={80}
 								/>
 							</div>
 							<div>

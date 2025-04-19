@@ -35,7 +35,11 @@ export function usePhoneHandling() {
       const { acceleration } = event;
       if (!acceleration || acceleration.x === null) return;
       
-      const { x, y, z } = acceleration;
+      // Use default value of 0 for any null values
+      const x = acceleration.x ?? 0;
+      const y = acceleration.y ?? 0;
+      const z = acceleration.z ?? 0;
+      
       lastMotionRef.current = { x, y, z };
     };
     

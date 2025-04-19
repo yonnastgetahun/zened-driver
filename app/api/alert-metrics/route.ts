@@ -14,6 +14,11 @@ export async function POST(request: Request) {
     // @ts-ignore - the supabase adapter adds this property
     const userId = session.user.id;
     
+    // Return error if userId is not available
+    if (!userId) {
+      return NextResponse.json({ error: 'User ID not found' }, { status: 400 });
+    }
+    
     // Parse request body
     const { alertLevel, alertVariant, duration, timestamp } = await request.json();
     
@@ -35,6 +40,7 @@ export async function POST(request: Request) {
         user_id: userId,
         alert_level: alertLevel,
         alert_variant: alertVariant,
+        alert_type: 'driving',
         duration: duration || null,
         created_at: timestamp || new Date().toISOString()
       });

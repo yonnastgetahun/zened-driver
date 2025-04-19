@@ -4,10 +4,11 @@ import PortalButton from '@/components/stripe/PortalButton';
 import { stripe } from '@/utils/stripe';
 import config from '@/config';
 import RefundButton from '@/components/stripe/RefundButton';
+import Image from 'next/image';
 
 // Helper function to get plan name from price ID
 function getPlanNameFromPriceId(priceId: string): { name: string; interval: string } {
-	for (const [planType, planData] of Object.entries(config.stripe)) {
+	for (const [_planType, planData] of Object.entries(config.stripe)) {
 		if (planData.monthPriceId === priceId) {
 			return { name: planData.name, interval: 'month' };
 		}
@@ -94,7 +95,7 @@ export async function BillingInfo() {
 		.single();
 
 	// Get subscription data  
-	const { data: subscriptionData, error: subscriptionError } = await supabase
+	const { data: subscriptionData, error: _subscriptionError } = await supabase
 		.from('stripe_customers')
 		.select('*')
 		.eq('user_id', userId)
@@ -116,8 +117,8 @@ export async function BillingInfo() {
 		return <div>Error fetching user data</div>;
 	}
 
-	if (subscriptionError) {
-		console.log('Error fetching subscription data:', subscriptionError);
+	if (_subscriptionError) {
+		console.log('Error fetching subscription data:', _subscriptionError);
 	}
 
 	if (!userData) {
@@ -218,10 +219,12 @@ export async function BillingInfo() {
 				<div>
 					<h2 className="text-xl font-semibold mb-4">Profile Image</h2>
 					{userData.image ? (
-						<img
+						<Image
 							src={userData.image}
 							alt="User avatar"
 							className="w-20 h-20 rounded-full"
+							width={80}
+							height={80}
 						/>
 					) : (
 						<p className="text-gray-600">No avatar set</p>

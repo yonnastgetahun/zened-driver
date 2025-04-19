@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Shield, Clock, AlertTriangle, TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { getMetricsManager } from '@/lib/metrics/MetricsManager';
+import { getMetricsManager, MetricsManager } from '@/lib/metrics/MetricsManager';
 import { motion } from 'framer-motion';
 
 /**

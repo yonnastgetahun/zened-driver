@@ -9,6 +9,66 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      alert_metrics: {
+        Row: {
+          id: string
+          user_id: string
+          alert_count: number
+          avg_duration: number | null
+          alert_variant: string
+          created_at: string
+          last_occurred: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          alert_count: number
+          avg_duration?: number | null
+          alert_variant: string
+          created_at?: string
+          last_occurred?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          alert_count?: number
+          avg_duration?: number | null
+          alert_variant?: string
+          created_at?: string
+          last_occurred?: string | null
+        }
+        Relationships: []
+      }
+      drivesafe_alert: {
+        Row: {
+          id: string
+          user_id: string
+          alert_type: string
+          alert_level: number
+          alert_variant: string
+          duration: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          alert_type?: string
+          alert_level: number
+          alert_variant: string
+          duration?: number | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          alert_type?: string
+          alert_level?: number
+          alert_variant?: string
+          duration?: number | null
+          created_at?: string
+        }
+        Relationships: []
+      }
       blogs: {
         Row: {
           content: string
