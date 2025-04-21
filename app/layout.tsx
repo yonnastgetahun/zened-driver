@@ -9,7 +9,16 @@ import FooterWrapper from "@/components/ui/FooterWrapper";
 import { GuestProvider } from "@/components/GuestContext";
 import FeedbackButton from "@/components/feedback/FeedbackButton";
 
-export const metadata: Metadata = config.metadata;
+export const metadata: Metadata = {
+  ...config.metadata,
+  icons: {
+    icon: '/brand/icons/favicon.ico',
+    shortcut: '/brand/icons/favicon-16x16.png',
+    apple: '/brand/icons/apple-touch-icon.png',
+  },
+  manifest: '/brand/icons/site.webmanifest',
+  themeColor: '#3A7CA5',
+};
 
 export default function RootLayout({
   children,
@@ -18,6 +27,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="stylesheet" href="/brand/brand-colors.css" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/brand/icons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/brand/icons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/brand/icons/favicon-16x16.png" />
+        <link rel="manifest" href="/brand/icons/site.webmanifest" />
+        <meta name="msapplication-TileColor" content="#3A7CA5" />
+        <meta name="theme-color" content="#3A7CA5" />
+      </head>
       <SessionProvider>
         <GuestProvider>
           <body

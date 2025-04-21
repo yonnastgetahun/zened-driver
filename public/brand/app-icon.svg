@@ -1,0 +1,13 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="225" fill="#3A7CA5"/>
+  
+  <!-- Path forming a subtle Z shape -->
+  <path d="M275 350 L750 350 L275 674 L750 674" stroke="#F7F9FB" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Circle representing mindfulness/focus -->
+  <circle cx="512" cy="512" r="180" fill="none" stroke="#81B29A" stroke-width="40"/>
+  
+  <!-- Small circle representing zen stone -->
+  <circle cx="512" cy="512" r="60" fill="#F2CC8F"/>
+</svg> 

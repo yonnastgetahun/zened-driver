@@ -61,12 +61,14 @@ const Footer = () => {
 					<div className="space-y-4">
 						<h3 className="text-lg font-semibold text-primary">Legal</h3>
 						<div className="flex flex-col space-y-2">
-							<Link
-								href="/privacy"
+							<a
+								href="https://www.termsfeed.com/live/5ccabc26-0423-4a83-b6d5-57b7a08fd80d"
+								target="_blank"
+								rel="noopener noreferrer"
 								className="text-gray-600 hover:text-primary transition-colors"
 							>
 								Privacy Policy
-							</Link>
+							</a>
 							<Link
 								href="/terms"
 								className="text-gray-600 hover:text-primary transition-colors"

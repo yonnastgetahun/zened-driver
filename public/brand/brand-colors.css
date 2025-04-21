@@ -1,0 +1,41 @@
+/**
+ * Zened Driver Brand Colors
+ * CSS variables for consistent use across the application
+ */
+
+:root {
+  /* Primary Colors */
+  --primary: #3A7CA5;
+  --primary-hover: #2C6384;
+  --secondary: #81B29A;
+  --accent: #F2CC8F;
+  
+  /* Neutrals */
+  --background: #F7F9FB;
+  --text: #2D3748;
+  --border: #E5E7EB;
+  --border-hover: #D1D5DB;
+  
+  /* UI States */
+  --success: #68D391;
+  --warning: #F6AD55;
+  --error: #FC8181;
+  --info: #63B3ED;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  --gradient-calm: linear-gradient(135deg, var(--secondary), var(--primary));
+}
+
+/* 
+ * Usage example:
+ * 
+ * .button-primary {
+ *   background-color: var(--primary);
+ *   color: white;
+ * }
+ * 
+ * .button-primary:hover {
+ *   background-color: var(--primary-hover);
+ * }
+ */ 
